@@ -1,0 +1,1 @@
+import Hangman as hangman
