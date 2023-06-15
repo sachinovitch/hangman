@@ -1,106 +1,126 @@
 import random
+
 class Hangman:
-    
-    print("Welcome to hangman")
-    print("------------------")
+    def __init__(self):
+        # Word dictionary to choose random words from
+        self.wordDictionary = ["python", "beefeater", "seaturtle", "oxygen", "eazy", "wow", "sacha"]
+        
+        # Randomly choose a word from the dictionary
+        self.randomWord = random.choice(self.wordDictionary)
+        
+        # Length of the word to guess
+        self.length_of_word_to_guess = len(self.randomWord)
+        
+        # Number of incorrect guesses
+        self.amount_of_times_wrong = 0
+        
+        # Index to keep track of the current letter being guessed
+        self.current_guess_index = 0
+        
+        # List to store the letters guessed so far
+        self.current_letters_guessed = []
+        
+        # Number of correctly guessed letters
+        self.current_letters_right = 0
 
-    wordDictionary=["python","beefeater","seaturtle","oxygen","eazy","wow","sacha"]
-
-    #choose random word
-    randomWord=random.choice(wordDictionary)
-
-    for x in randomWord:
-        print("_", end=" ")
-
-    def print_hangman(wrong):
-        if wrong==0:
+    def print_hangman(self, wrong):
+        # Print the hangman drawing per wrong guesses
+        if wrong == 0:
             print("\n +---+")
             print("     |")
             print("     |")
             print("     |")
             print("    ===")
-        elif wrong==1:
+        elif wrong == 1:
             print("\n +---+")
             print(" O   |")
             print("     |")
             print("     |")
             print("    ===")
-        elif wrong==2:
+        elif wrong == 2:
             print("\n +---+")
             print(" O   |")
             print(" |   |")
             print("     |")
             print("    ===")
-        elif wrong==3:
+        elif wrong == 3:
             print("\n +---+")
             print(" O   |")
             print("/|   |")
             print("     |")
             print("    ===")
-        elif wrong==4:
+        elif wrong == 4:
             print("\n +---+")
             print(" O   |")
             print("/|\  |")
             print("     |")
             print("    ===")
-        elif wrong==5:
+        elif wrong == 5:
             print("\n +---+")
             print(" O   |")
             print("/|\  |")
             print("/    |")
             print("    ===")
-        elif wrong==6:
+        elif wrong == 6:
             print("\n +---+")
             print(" O   |")
             print("/|\  |")
             print("/ \  |")
             print("    ===")
 
-    def printWord(guessedLetters):
-        counter=0
-        rightLetters=0
-        for char in randomWord:
-            if(char in guessedLetters):
-                print(randomWord[counter], end=" ")
-                rightLetters+=1
+    def printWord(self, guessedLetters):
+        counter = 0
+        rightLetters = 0
+        for char in self.randomWord:
+            if char in guessedLetters:
+                # Print the correctly guessed letters
+                print(self.randomWord[counter], end=" ")
+                rightLetters += 1
             else:
+                # Print spaces for letters not yet guessed
                 print(" ", end=" ")
-            counter+=1
+            counter += 1
         return rightLetters
 
-    def printLines():
+    def printLines(self):
+        # Print a line of underscores to represent the word to be guessed
         print("\r")
-        for char in randomWord:
+        for char in self.randomWord:
             print("_", end=" ")
 
-    length_of_word_to_guess = len(randomWord)
-    amount_of_times_wrong = 0
-    current_guess_index = 0
-    current_letters_guessed = []
-    current_letters_right = 0
+    def input(self, prompt):
+        # Wrapper for the input function to use within the class
+        return input(prompt)
 
-    while (amount_of_times_wrong != 6 and current_letters_right!=length_of_word_to_guess):
-        print("\nLetters guessed so far: ")
-        for letter in current_letters_guessed:
-            print(letter, end=" ")
-        #Prompt user for input
-        letterGuessed = input("\nGuess a letter: ")
-        #User is right
-        if(randomWord[current_guess_index]==letterGuessed):
-            print_hangman(amount_of_times_wrong)
-            #Print word
-            current_guess_index+=1
-            current_letters_guessed.append(letterGuessed)
-            current_letters_right = printWord(current_letters_guessed)
-            printLines()
-        #User is wrong
-        else:
-            amount_of_times_wrong+=1
-            current_letters_guessed.append(letterGuessed)
-            #update drawing
-            print_hangman(amount_of_times_wrong)
-            #print word
-            current_letters_right = printWord(current_letters_guessed)
-            printLines()
+    def start_game(self):
+        print("Welcome to Hangman!")
+        print("-------------------")
 
-    print("GAME OVER")
+        # Print initial underscores representing the word to be guessed
+        for _ in self.randomWord:
+            print("_", end=" ")
+
+        while self.amount_of_times_wrong != 6 and self.current_letters_right != self.length_of_word_to_guess:
+            print("\nLetters guessed so far: ")
+            for letter in self.current_letters_guessed:
+                print(letter, end=" ")
+
+            # Prompt the user to guess a letter
+            letterGuessed = self.input("\nGuess a letter: ")
+
+            if self.randomWord[self.current_guess_index] == letterGuessed:
+                # User guessed the correct letter
+                self.print_hangman(self.amount_of_times_wrong)
+                self.current_guess_index += 1
+                self.current_letters_guessed.append(letterGuessed)
+                self.current_letters_right = self.printWord(self.current_letters_guessed)
+                self.printLines()
+            else:
+                # User guessed the wrong letter
+                self.amount_of_times_wrong += 1
+                self.current_letters_guessed.append(letterGuessed)
+                self.print_hangman(self.amount_of_times_wrong)
+                self.current_letters_right = self.printWord(self.current_letters_guessed)
+                self.printLines()
+
+        print("GAME OVER")
